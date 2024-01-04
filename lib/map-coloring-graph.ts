@@ -5,7 +5,7 @@ export default class MapColoringGraph {
   points: Point[];
   lines: Line[];
 
-  constructor(public n: number, public k: number) {
+  constructor(public n: number) {
     this.generateMap();
   }
 
@@ -49,6 +49,7 @@ export default class MapColoringGraph {
         // Such that X is not already connected to Y and the line crosses no other line (is valid)
         if (this.isLineValid(new Line(randomPoint, nearestPoint))) {
           this.lines.push(new Line(randomPoint, nearestPoint));
+          break;
         }
 
         visitedPoints.push(nearestPoint);

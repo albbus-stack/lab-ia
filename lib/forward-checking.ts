@@ -8,9 +8,11 @@ export default class ForwardChecking {
   standardDeviation: number;
   medianRunTime: number;
   iterations: number;
+  k: number;
 
-  constructor(mcg: MapColoringGraph, iterations: number) {
+  constructor(mcg: MapColoringGraph, k: number, iterations: number) {
     this.mapColoringGraph = mcg;
+    this.k = k;
     this.averageRunTime = 0;
     this.standardDeviation = 0;
     this.medianRunTime = 0;
@@ -38,14 +40,16 @@ export default class ForwardChecking {
     const assignments: number[] = [];
 
     for (let i = 0; i < this.mapColoringGraph.n; i++) {
-      domains.push(Array.from(Array(this.mapColoringGraph.k).keys()));
+      domains.push(Array.from(Array(this.k).keys()));
       assignments.push(-1);
     }
 
     const res = this.backtrackWithForwardChecking(assignments, domains);
     // if (res) {
     //   console.log(assignments);
-    //   console.log("found");
+    //   console.log("Solution found");
+    // } else {
+    //   console.log("No solution found");
     // }
   }
 
@@ -93,7 +97,6 @@ export default class ForwardChecking {
         return i;
       }
     }
-
     return -1;
   }
 

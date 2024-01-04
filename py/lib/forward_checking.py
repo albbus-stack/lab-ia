@@ -5,8 +5,9 @@ from lib.map_coloring_graph import MapColoringGraph
 from lib.utils import average, median, standard_deviation  
 
 class ForwardChecking:
-    def __init__(self, mcg: MapColoringGraph, iterations: int):
+    def __init__(self, mcg: MapColoringGraph, k: int,  iterations: int):
         self.map_coloring_graph = mcg
+        self.k = k
         self.average_run_time = 0
         self.standard_deviation = 0
         self.median_run_time = 0
@@ -31,10 +32,15 @@ class ForwardChecking:
         assignments = []
 
         for _ in range(self.map_coloring_graph.n):
-            domains.append(list(range(self.map_coloring_graph.k)))
+            domains.append(list(range(self.k)))
             assignments.append(-1)
 
-        self.backtrack_with_forward_checking(assignments, domains)
+        res = self.backtrack_with_forward_checking(assignments, domains)
+        # if res:
+        #   print(assignments)
+        #   print("Solution found")
+        # else:
+        #   print("No solution found")
 
     def backtrack_with_forward_checking(self, assignments: List[int], domains: List[List[int]]):
         if all(assignment != -1 for assignment in assignments):
@@ -42,7 +48,7 @@ class ForwardChecking:
 
         unassigned = self.get_unassigned(assignments)
 
-        #print(assignments, domains)
+        # print(assignments, domains)
 
         for value in domains[unassigned]:
             temp_domains = [list(domain) for domain in domains]
@@ -79,7 +85,7 @@ class ForwardChecking:
                    line.pointA == self.map_coloring_graph.points[unassigned] and line.pointB == self.map_coloring_graph.points[i]
                    for line in self.map_coloring_graph.lines) and assignments[i] == value:
                 return False
-
+                
         return True
 
     def __str__(self):
