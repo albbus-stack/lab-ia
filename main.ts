@@ -8,8 +8,9 @@ const MAX_N = 100;
 if (!fs.existsSync("output")) {
   fs.mkdirSync("output");
 }
+
 const csv = fs.createWriteStream("output/results.csv", {
-  flags: "a",
+  flags: "w",
 });
 csv.write("n,k,average,median,standard deviation\n");
 
@@ -46,3 +47,5 @@ for (let n = 0; n < MAX_N; n++) {
 
   // Construct a table of average run times for each algorithm for values of n up to the largest you can manage.
 }
+
+csv.end();
