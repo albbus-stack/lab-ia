@@ -3,6 +3,7 @@ import { average, median, standardDeviation } from "./utils";
 
 export default class ForwardChecking {
   mapColoringGraph: MapColoringGraph;
+  assignments: number[];
   averageRunTime: number;
   standardDeviation: number;
   medianRunTime: number;
@@ -14,6 +15,7 @@ export default class ForwardChecking {
     this.standardDeviation = 0;
     this.medianRunTime = 0;
     this.iterations = iterations;
+    this.assignments = [];
   }
 
   run() {
@@ -40,31 +42,48 @@ export default class ForwardChecking {
       assignments.push(-1);
     }
 
-    this.backtrackWithForwardChecking(assignments, domains);
+    const res = this.backtrackWithForwardChecking(assignments, domains);
+    // if (res) {
+    //   console.log(assignments);
+    //   console.log("found");
+    // }
   }
 
   private backtrackWithForwardChecking(
     assignments: number[],
     domains: number[][]
   ) {
-    if (assignments.length === this.mapColoringGraph.n) {
+    if (assignments.every((assignment) => assignment !== -1)) {
       return true;
     }
+    // console.log(assignments, domains);
 
     const unassigned = this.getUnassigned(assignments);
 
     for (const value of domains[unassigned]) {
-      if (this.isAssignmentValid(assignments, unassigned, value)) {
-        assignments[unassigned] = value;
+      const tempDomains = [...domains.map((domain) => [...domain])];
+      assignments[unassigned] = value;
+      domains[unassigned] = [value];
 
-        if (this.backtrackWithForwardChecking(assignments, domains)) {
-          return true;
+      for (let i = 0; i < assignments.length; i++) {
+        if (assignments[i] !== -1 || i === unassigned) {
+          continue;
         }
 
-        assignments[unassigned] = -1;
+        domains[i] = domains[i].filter((domainValue) => {
+          return this.isAssignmentValid(assignments, i, domainValue);
+        });
       }
+
+      if (this.backtrackWithForwardChecking(assignments, domains)) {
+        return true;
+      }
+
+      assignments[unassigned] = -1;
+      domains = tempDomains;
     }
 
+    // console.log("backtrack");
     return false;
   }
 
@@ -84,7 +103,7 @@ export default class ForwardChecking {
     value: number
   ) {
     for (let i = 0; i < assignments.length; i++) {
-      if (assignments[i] === undefined) {
+      if (assignments[i] === -1 || i === unassigned) {
         continue;
       }
 
@@ -97,11 +116,10 @@ export default class ForwardChecking {
             (pointA === line.pointA && pointB === line.pointB) ||
             (pointA === line.pointB && pointB === line.pointA)
           );
-        })
+        }) &&
+        assignments[i] === value
       ) {
-        if (assignments[i] === value) {
-          return false;
-        }
+        return false;
       }
     }
 
