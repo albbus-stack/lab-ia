@@ -18,7 +18,9 @@ export default class MapColoringGraph {
       this.points.push(new Point(Math.random(), Math.random()));
     }
 
-    while (this.areValidLinesAvailable()) {
+    let available_points = this.getAvailablePoints();
+
+    while (available_points.length > 0) {
       // Select a point X at random
       const randomPoint =
         this.points[Math.floor(Math.random() * this.points.length)];
@@ -56,7 +58,9 @@ export default class MapColoringGraph {
         nearestPoint = undefined;
         nearestPointDistance = Infinity;
       }
+
       // Repeat the previous step until no more connections are possible
+      available_points = this.getAvailablePoints();
     }
   }
 
@@ -79,9 +83,11 @@ export default class MapColoringGraph {
     return availablePoints.length > 0;
   }
 
-  // Checks if there are any valid lines available from any point
-  private areValidLinesAvailable() {
-    return this.points.some((point) => this.areValidLinesAvailableFrom(point));
+  // Gets all the still available points to connect lines to
+  private getAvailablePoints() {
+    return this.points.filter((point) => {
+      return this.areValidLinesAvailableFrom(point);
+    });
   }
 
   // Displays the map coloring graph as a string

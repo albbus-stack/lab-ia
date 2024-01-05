@@ -18,9 +18,11 @@ class MapColoringGraph:
         for i in range(self.n):
             self.points.append(Point(random.random(), random.random()))
 
-        while self.are_valid_lines_available():
+        available_points = self.get_available_points()
+
+        while available_points:
             # Select a point X at random
-            random_point = random.choice(self.points)
+            random_point = random.choice(available_points)
 
             nearest_point = None
             nearest_point_distance = complex('inf')
@@ -51,6 +53,9 @@ class MapColoringGraph:
                 nearest_point = None
                 nearest_point_distance = complex('inf')
 
+            # Repeat the previous step until no more connections are possible
+            available_points = self.get_available_points()
+
     # Checks if a line is valid (not crossing any other line and not equal to any other line)
     def is_line_valid(self, line):
         return not any(existing_line.is_equal(line) or existing_line.is_crossing(line) for existing_line in self.lines)
@@ -62,9 +67,9 @@ class MapColoringGraph:
 
         return len(available_points) > 0
 
-    # Checks if there are any valid lines available from any point
-    def are_valid_lines_available(self):
-        return any(self.are_valid_lines_available_from(point) for point in self.points)
+    # Gets all the still available points to
+    def get_available_points(self):
+        return [point for point in self.points if self.are_valid_lines_available_from(point)]
 
     def plot_grid(self, filename):
         plt.figure(figsize=(10, 10))

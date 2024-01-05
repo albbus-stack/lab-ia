@@ -14,7 +14,7 @@ const csv = fs.createWriteStream("output/results.csv", {
 });
 csv.write("n,k,average,median,standard deviation\n");
 
-for (let n = 2; n < MAX_N; n++) {
+for (let n = 2; n < MAX_N + 1; n++) {
   // Generate random instances of map-coloring problems as follows: scatter n points on the unit square; select a point X at random, connect X by a straight line to the nearest point Y such that X is not already connected to Y and the line crosses no other line; repeat the previous step until no more connections are possible. The points represent regions on the map and the lines connect neighbors.
 
   const mapColoring = new MapColoringGraph(n);
