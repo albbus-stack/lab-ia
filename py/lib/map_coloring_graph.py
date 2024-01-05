@@ -71,7 +71,7 @@ class MapColoringGraph:
     def get_available_points(self):
         return [point for point in self.points if self.are_valid_lines_available_from(point)]
 
-    def plot_grid(self, filename):
+    def plot_grid(self, filename, colors = None):
         plt.figure(figsize=(10, 10))
         plt.axis('off')
 
@@ -79,11 +79,12 @@ class MapColoringGraph:
             plt.plot([line.pointA.x, line.pointB.x], [line.pointA.y, line.pointB.y], color='black')
             plt.text((line.pointA.x + line.pointB.x) / 2, (line.pointA.y + line.pointB.y) / 2, str(self.lines.index(line)), fontsize=12)
 
-        for point in self.points:
-            plt.plot(point.x, point.y, 'o', color='black')
+        for index, point in enumerate(self.points):
+            plt.plot(point.x, point.y, 'o', color='black' if not colors else colors[index])
             plt.text(point.x, point.y, str(self.points.index(point)), fontsize=12)
 
         plt.savefig(filename, bbox_inches='tight')
+        plt.close()
 
     # Displays the map coloring graph as a string
     def __str__(self):

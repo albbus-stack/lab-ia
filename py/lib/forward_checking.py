@@ -27,6 +27,8 @@ class ForwardChecking:
         self.standard_deviation = standard_deviation(times)
         self.median_run_time = median(times)
 
+        self.plot_solution()
+
     def backtrack(self):
         domains = []
         assignments = []
@@ -36,11 +38,12 @@ class ForwardChecking:
             assignments.append(-1)
 
         res = self.backtrack_with_forward_checking(assignments, domains)
-        # if res:
-        #   print(assignments)
-        #   print("Solution found")
+        if res:
+            self.assignments = assignments
+            # print(assignments)
+            # print("Solution found")
         # else:
-        #   print("No solution found")
+            # print("No solution found")
 
     def backtrack_with_forward_checking(self, assignments: List[int], domains: List[List[int]]):
         if all(assignment != -1 for assignment in assignments):
@@ -85,8 +88,20 @@ class ForwardChecking:
                    line.pointA == self.map_coloring_graph.points[unassigned] and line.pointB == self.map_coloring_graph.points[i]
                    for line in self.map_coloring_graph.lines) and assignments[i] == value:
                 return False
-                
+
         return True
+
+    def plot_solution(self):
+        colors = ['red', 'blue', 'green', 'yellow']
+        color_assignments = []
+
+        for i in range(len(self.assignments)):
+            color_assignments.append(colors[self.assignments[i]])
+
+        print(color_assignments)
+
+        self.map_coloring_graph.plot_grid("output/map_coloring_" + str(self.map_coloring_graph.n) + "_" + str(self.k) + "_forward_checking.png", color_assignments)
+
 
     def __str__(self):
         return f"Average run time: {self.average_run_time} s\nStandard deviation: {self.standard_deviation} s\nMedian run time: {self.median_run_time} s"
