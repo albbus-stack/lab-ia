@@ -2,7 +2,8 @@
   "name": "lab-ia",
   "version": "1.0.0",
   "scripts": {
-    "start": "npx tsx main.ts"
+    "start": "npx tsx main.ts",
+    "plot": "python3 plot.py"
   },
   "author": "Alberto Del Buono Paolini",
   "license": "MIT",

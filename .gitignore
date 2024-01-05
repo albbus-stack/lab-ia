@@ -3,3 +3,4 @@ output/
 
 **.pyc
 py/venv/**
+venv/**
