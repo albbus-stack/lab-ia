@@ -98,9 +98,8 @@ class ForwardChecking:
         for i in range(len(self.assignments)):
             color_assignments.append(colors[self.assignments[i]])
 
-        print(color_assignments)
-
-        self.map_coloring_graph.plot_grid("output/map_coloring_" + str(self.map_coloring_graph.n) + "_" + str(self.k) + "_forward_checking.png", color_assignments)
+        if len(color_assignments) > 0:
+            self.map_coloring_graph.plot_grid("output/map_coloring_" + str(self.map_coloring_graph.n) + "_" + str(self.k) + "_forward_checking.png", color_assignments)
 
 
     def __str__(self):

@@ -45,7 +45,7 @@ export default class ForwardChecking {
     }
 
     const res = this.backtrackWithForwardChecking(assignments, domains);
-    // if (res) {
+    if (res) this.assignments = assignments;
     //   console.log(assignments);
     //   console.log("Solution found");
     // } else {

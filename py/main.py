@@ -10,6 +10,9 @@ MAX_N = 10
 if not os.path.exists("output"):
     os.mkdir("output")
 
+for file in os.listdir("output"):
+    os.remove("output/" + file)
+
 with open("output/results.csv", "w", newline="") as csvfile:
     csv_writer = csv.writer(csvfile)
     csv_writer.writerow(["n", "k", "average", "median", "standard deviation"])

@@ -95,6 +95,6 @@ export default class MapColoringGraph {
     return `
 Points:\n  ${this.points.map((point) => point.toString()).join("\n  ")}
 Lines:\n  ${this.lines.map((line) => line.toString()).join("\n  ")}
-    `;
+`;
   }
 }
