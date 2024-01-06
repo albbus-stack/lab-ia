@@ -1,6 +1,7 @@
 import * as fs from "fs";
 import ForwardChecking from "./lib/forward-checking";
 import MapColoringGraph from "./lib/map-coloring-graph";
+import ArcConsistency from "./lib/arc-consistency";
 
 const ITERATIONS = 100;
 const MAX_N = 10;
@@ -12,7 +13,7 @@ if (!fs.existsSync("output")) {
 const resultsCsv = fs.createWriteStream("output/results.csv", {
   flags: "w",
 });
-resultsCsv.write("n,k,average,median,standard deviation\n");
+resultsCsv.write("algorithm,n,k,average,median,standard deviation\n");
 
 const mapsData = fs.createWriteStream("output/maps.txt", {
   flags: "w",
@@ -39,7 +40,7 @@ for (let n = 2; n < MAX_N + 1; n++) {
     console.log("----- Forward Checking K" + k + " -----");
     console.log(backtrackingWithForwardChecking.toString() + "\n");
     mapsData.write(
-      "Assignments K" +
+      "FC Assignments K" +
         k +
         ":" +
         backtrackingWithForwardChecking.assignments.toString() +
@@ -47,11 +48,32 @@ for (let n = 2; n < MAX_N + 1; n++) {
     );
 
     resultsCsv.write(
-      `${n},${k},${backtrackingWithForwardChecking.averageRunTime},${backtrackingWithForwardChecking.medianRunTime},${backtrackingWithForwardChecking.standardDeviation}\n`
+      `fc,${n},${k},${backtrackingWithForwardChecking.averageRunTime},${backtrackingWithForwardChecking.medianRunTime},${backtrackingWithForwardChecking.standardDeviation}\n`
+    );
+
+    // And backtracking with MAC.
+
+    const backtrackingWithArcConsistency = new ArcConsistency(
+      mapColoring,
+      k,
+      ITERATIONS
+    );
+    backtrackingWithArcConsistency.run();
+
+    console.log("----- Arc Consistency K" + k + " -----");
+    console.log(backtrackingWithArcConsistency.toString() + "\n");
+    mapsData.write(
+      "MAC Assignments K" +
+        k +
+        ":" +
+        backtrackingWithArcConsistency.assignments.toString() +
+        "\n"
+    );
+
+    resultsCsv.write(
+      `mac,${n},${k},${backtrackingWithArcConsistency.averageRunTime},${backtrackingWithArcConsistency.medianRunTime},${backtrackingWithArcConsistency.standardDeviation}\n`
     );
   }
-
-  // And backtracking with MAC.
 }
 
 // Construct a table of average run times for each algorithm for values of n up to the largest you can manage.

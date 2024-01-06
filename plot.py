@@ -44,7 +44,7 @@ class Line:
         return (q.x < max(p.x, r.x) and q.x > min(p.x, r.x) and
                 q.y < max(p.y, r.y) and q.y > min(p.y, r.y))
 
-    def is_crossing(self, line, i=0, j=0, k=0, l=0):
+    def is_crossing(self, line):
         p1, q1 = self.pointA, self.pointB
         p2, q2 = line.pointA, line.pointB
 
@@ -123,18 +123,29 @@ with open("output/maps.txt", "r") as maps_file:
                 i += 1
             
             v = lines[i].strip().split(":")[1].split(",")
-            assignments_k3 = list(map(int, v if v != [''] else []))
+            assignments_k3_fc = list(map(int, v if v != [''] else []))
             i += 1
             v = lines[i].strip().split(":")[1].split(",")
-            assignments_k4 = list(map(int, v if v != [''] else []))
+            assignments_k3_mac = list(map(int, v if v != [''] else []))
+            i += 1
+            v = lines[i].strip().split(":")[1].split(",")
+            assignments_k4_fc = list(map(int, v if v != [''] else []))
+            i += 1
+            v = lines[i].strip().split(":")[1].split(",")
+            assignments_k4_mac = list(map(int, v if v != [''] else []))
 
-        
         if points:
-            if len(assignments_k3) != 0:
-                plot_grid(points, lines_list, "output/map_coloring_" + str(file_index + 2) + "_3" + "_forward_checking.png", [colors[assignment] for assignment in assignments_k3])
+            if len(assignments_k3_fc) != 0:
+                plot_grid(points, lines_list, "output/map_coloring_" + str(file_index + 2) + "_3" + "_forward_checking.png", [colors[assignment] for assignment in assignments_k3_fc])
 
-            if len(assignments_k4) != 0:
-                plot_grid(points, lines_list, "output/map_coloring_" + str(file_index + 2) + "_4" + "_forward_checking.png", [colors[assignment] for assignment in assignments_k4])
+            if len(assignments_k4_fc) != 0:
+                plot_grid(points, lines_list, "output/map_coloring_" + str(file_index + 2) + "_4" + "_forward_checking.png", [colors[assignment] for assignment in assignments_k4_fc])
+
+            if len(assignments_k3_mac) != 0:
+                plot_grid(points, lines_list, "output/map_coloring_" + str(file_index + 2) + "_3" + "_arc_consistency.png", [colors[assignment] for assignment in assignments_k3_mac])
+
+            if len(assignments_k4_mac) != 0:
+                plot_grid(points, lines_list, "output/map_coloring_" + str(file_index + 2) + "_4" + "_arc_consistency.png", [colors[assignment] for assignment in assignments_k4_mac])
 
             file_index += 1
 
