@@ -165,7 +165,7 @@ export default class ArcConsistency {
 
     while (queue.length > 0) {
       const [from, to] = queue.shift()!;
-      console.log(queue);
+      // console.log(queue);
 
       if (this.revise(assignments, domains, from, to)) {
         // If the domain of the 'from' point becomes empty, inconsistency is detected
