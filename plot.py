@@ -98,7 +98,6 @@ with open("output/maps.txt", "r") as maps_file:
     colors = ['red', 'blue', 'green', 'yellow']
     lines = maps_file.readlines()
     i = 0
-    file_index = 0
 
     while i != len(lines):
         points = []
@@ -116,7 +115,7 @@ with open("output/maps.txt", "r") as maps_file:
                 i += 1
             
             i += 1
-            while "Assignments K3:" not in lines[i].strip():
+            while "FC Assignments K3:" not in lines[i].strip():
                 lines_list.append(Line(Point(
                     float(lines[i].split("->")[0].strip()[1:].split(",")[0]), float(lines[i].split("->")[0].strip()[1:].split(",")[1].strip()[:-1])),
                     Point(float(lines[i].split("->")[1].strip()[1:].split(",")[0]), float(lines[i].split("->")[1].strip()[1:].split(",")[1].strip()[:-1]))))
@@ -136,17 +135,15 @@ with open("output/maps.txt", "r") as maps_file:
 
         if points:
             if len(assignments_k3_fc) != 0:
-                plot_grid(points, lines_list, "output/map_coloring_" + str(file_index + 2) + "_3" + "_forward_checking.png", [colors[assignment] for assignment in assignments_k3_fc])
+                plot_grid(points, lines_list, "output/map_coloring_" + str(len(points)) + "_3" + "_forward_checking.png", [colors[assignment] for assignment in assignments_k3_fc])
 
             if len(assignments_k4_fc) != 0:
-                plot_grid(points, lines_list, "output/map_coloring_" + str(file_index + 2) + "_4" + "_forward_checking.png", [colors[assignment] for assignment in assignments_k4_fc])
+                plot_grid(points, lines_list, "output/map_coloring_" + str(len(points)) + "_4" + "_forward_checking.png", [colors[assignment] for assignment in assignments_k4_fc])
 
             if len(assignments_k3_mac) != 0:
-                plot_grid(points, lines_list, "output/map_coloring_" + str(file_index + 2) + "_3" + "_arc_consistency.png", [colors[assignment] for assignment in assignments_k3_mac])
+                plot_grid(points, lines_list, "output/map_coloring_" + str(len(points)) + "_3" + "_arc_consistency.png", [colors[assignment] for assignment in assignments_k3_mac])
 
             if len(assignments_k4_mac) != 0:
-                plot_grid(points, lines_list, "output/map_coloring_" + str(file_index + 2) + "_4" + "_arc_consistency.png", [colors[assignment] for assignment in assignments_k4_mac])
-
-            file_index += 1
+                plot_grid(points, lines_list, "output/map_coloring_" + str(len(points)) + "_4" + "_arc_consistency.png", [colors[assignment] for assignment in assignments_k4_mac])
 
         i += 1

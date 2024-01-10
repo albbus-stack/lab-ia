@@ -5,6 +5,7 @@ import { average, median, standardDeviation } from "./utils";
 export default class ForwardChecking {
   mapColoringGraph: MapColoringGraph;
   assignments: number[];
+  exampleAssignments: number[];
   averageRunTime: number;
   standardDeviation: number;
   medianRunTime: number;
@@ -19,16 +20,26 @@ export default class ForwardChecking {
     this.medianRunTime = 0;
     this.iterations = iterations;
     this.assignments = [];
+    this.exampleAssignments = [];
   }
 
   run() {
     const times: number[] = [];
 
     for (let i = 0; i < this.iterations; i++) {
+      if (i !== 0)
+        this.mapColoringGraph = new MapColoringGraph(this.mapColoringGraph.n);
+
+      this.assignments = [];
+
       const start = performance.now();
       this.backtrack();
       const end = performance.now();
       times.push(end - start);
+
+      if (i === 0) {
+        this.exampleAssignments = this.assignments;
+      }
     }
 
     this.averageRunTime = average(times);
@@ -46,7 +57,9 @@ export default class ForwardChecking {
     }
 
     const res = this.backtrackWithForwardChecking(assignments, domains);
-    if (res) this.assignments = assignments;
+    if (res) {
+      this.assignments = assignments;
+    }
     //   console.log(assignments);
     //   console.log("Solution found");
     // } else {
@@ -86,6 +99,12 @@ export default class ForwardChecking {
         domains[neighbour] = domains[neighbour].filter((domainValue) => {
           return this.isAssignmentValid(assignments, neighbour, domainValue);
         });
+      }
+
+      if (domains.some((domain) => domain.length === 0)) {
+        assignments[unassigned] = -1;
+        domains = tempDomains;
+        continue;
       }
 
       // Recursively call the method with updated assignments and domains

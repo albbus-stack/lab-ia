@@ -5,6 +5,7 @@ import { average, median, standardDeviation } from "./utils";
 export default class ArcConsistency {
   mapColoringGraph: MapColoringGraph;
   assignments: number[];
+  exampleAssignments: number[];
   averageRunTime: number;
   standardDeviation: number;
   medianRunTime: number;
@@ -19,16 +20,26 @@ export default class ArcConsistency {
     this.medianRunTime = 0;
     this.iterations = iterations;
     this.assignments = [];
+    this.exampleAssignments = [];
   }
 
   run() {
     const times: number[] = [];
 
     for (let i = 0; i < this.iterations; i++) {
+      if (i !== 0)
+        this.mapColoringGraph = new MapColoringGraph(this.mapColoringGraph.n);
+
+      this.assignments = [];
+
       const start = performance.now();
       this.backtrack();
       const end = performance.now();
       times.push(end - start);
+
+      if (i === 0) {
+        this.exampleAssignments = this.assignments;
+      }
     }
 
     this.averageRunTime = average(times);
@@ -49,7 +60,9 @@ export default class ArcConsistency {
       assignments,
       domains
     );
-    if (res) this.assignments = assignments;
+    if (res) {
+      this.assignments = assignments;
+    }
     //   console.log(assignments);
     //   console.log("Solution found");
     // } else {
@@ -128,20 +141,24 @@ export default class ArcConsistency {
     const unassigned = this.getUnassigned(assignments, domains);
 
     for (const value of domains[unassigned]) {
-      const tempDomains = [...domains.map((domain) => [...domain])];
-      assignments[unassigned] = value;
+      if (this.isAssignmentValid(assignments, unassigned, value)) {
+        const tempDomains = [...domains.map((domain) => [...domain])];
+        assignments[unassigned] = value;
 
-      // Apply arc consistency to reduce the domains of neighboring unassigned points
-      if (this.applyArcConsistency(assignments, domains, unassigned)) {
-        // Recursively call the method with updated assignments and domains
-        if (this.backtrackWithMaintainingArcConsistency(assignments, domains)) {
-          return true;
+        // Apply arc consistency to reduce the domains of neighboring unassigned points
+        if (this.applyArcConsistency(assignments, domains, unassigned)) {
+          // Recursively call the method with updated assignments and domains
+          if (
+            this.backtrackWithMaintainingArcConsistency(assignments, domains)
+          ) {
+            return true;
+          }
         }
-      }
 
-      // Reset the assignment of the current unassigned point and restore the previous domains
-      assignments[unassigned] = -1;
-      domains = tempDomains;
+        // Reset the assignment of the current unassigned point and restore the previous domains
+        assignments[unassigned] = -1;
+        domains = tempDomains;
+      }
     }
 
     // No valid coloring found, backtrack
@@ -167,7 +184,7 @@ export default class ArcConsistency {
       const [from, to] = queue.shift()!;
       // console.log(queue);
 
-      if (this.revise(assignments, domains, from, to)) {
+      if (this.revise(assignments, domains, from)) {
         // If the domain of the 'from' point becomes empty, inconsistency is detected
         if (domains[from].length === 0) {
           return false;
@@ -188,16 +205,11 @@ export default class ArcConsistency {
     return true;
   }
 
-  private revise(
-    assignments: number[],
-    domains: number[][],
-    from: number,
-    to: number
-  ) {
+  private revise(assignments: number[], domains: number[][], from: number) {
     let revised = false;
 
     for (const value of domains[from]) {
-      if (!this.hasSupport(assignments, domains, from, to, value)) {
+      if (!this.hasSupport(assignments, domains, from)) {
         // Remove the value from the domain of the 'from' point
         domains[from] = domains[from].filter(
           (domainValue) => domainValue !== value
@@ -209,13 +221,7 @@ export default class ArcConsistency {
     return revised;
   }
 
-  private hasSupport(
-    assignments: number[],
-    domains: number[][],
-    from: number,
-    to: number,
-    value: number
-  ) {
+  private hasSupport(assignments: number[], domains: number[][], to: number) {
     for (const neighbourValue of domains[to]) {
       if (this.isAssignmentValid(assignments, to, neighbourValue)) {
         return true;
