@@ -12,20 +12,20 @@ def plot_results(results, title, filename):
     plt.gca().get_xaxis().get_major_locator().set_params(integer=True)
     plt.ylabel("average time (ms)")
 
-    plt.plot([result[0] for result in results], [result[1] for result in results], color='black', marker='o', linestyle='solid', linewidth=1, markersize=3)
-    plt.savefig(filename.replace("results.png", "avg_results.png"), bbox_inches='tight')
+    plt.plot([result[0] for result in results], [result[1] for result in results], color="black", marker="o", linestyle="solid", linewidth=1, markersize=3)
+    plt.savefig(filename.replace("results.png", "avg_results.png"), bbox_inches="tight")
     plt.close()
     
     plt.title(title)
     plt.xlabel("n")
     plt.gca().get_xaxis().get_major_locator().set_params(integer=True)
     plt.ylabel("median time (ms)")
-    plt.plot([result[0] for result in results], [result[2] for result in results], color='black', marker='o', linestyle='solid', linewidth=1, markersize=3)
-    plt.savefig(filename.replace("results.png", "med_results.png"), bbox_inches='tight')
+    plt.plot([result[0] for result in results], [result[2] for result in results], color="black", marker="o", linestyle="solid", linewidth=1, markersize=3)
+    plt.savefig(filename.replace("results.png", "med_results.png"), bbox_inches="tight")
     plt.close()
 
 with open("output/results.csv", "r") as results_file:
-    results = csv.reader(results_file, delimiter=',')
+    results = csv.reader(results_file, delimiter=",")
     next(results, None)
 
     fc_3_results = []

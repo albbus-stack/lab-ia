@@ -77,17 +77,17 @@ class Line:
 
 def plot_grid(points, lines, filename, colors = None):
     plt.figure(figsize=(10, 10))
-    plt.axis('off')
+    plt.axis("off")
 
     for line in lines:
-        plt.plot([line.pointA.x, line.pointB.x], [line.pointA.y, line.pointB.y], color='black')
+        plt.plot([line.pointA.x, line.pointB.x], [line.pointA.y, line.pointB.y], color="black")
         plt.text((line.pointA.x + line.pointB.x) / 2, (line.pointA.y + line.pointB.y) / 2, str(lines.index(line)), fontsize=12)
 
     for index, point in enumerate(points):
-        plt.plot(point.x, point.y, 'o', color='black' if not colors else colors[index])
+        plt.plot(point.x, point.y, "o", color="black" if not colors else colors[index])
         plt.text(point.x, point.y, str(points.index(point)), fontsize=12)
 
-    plt.savefig(filename, bbox_inches='tight')
+    plt.savefig(filename, bbox_inches="tight")
     plt.close()
 
 for file in os.listdir("output"):
@@ -95,7 +95,7 @@ for file in os.listdir("output"):
         os.remove("output/" + file)
 
 with open("output/maps.txt", "r") as maps_file:
-    colors = ['red', 'blue', 'green', 'yellow']
+    colors = ["red", "blue", "green", "yellow"]
     lines = maps_file.readlines()
     i = 0
 
@@ -122,16 +122,16 @@ with open("output/maps.txt", "r") as maps_file:
                 i += 1
             
             v = lines[i].strip().split(":")[1].split(",")
-            assignments_k3_fc = list(map(int, v if v != [''] else []))
+            assignments_k3_fc = list(map(int, v if v != [""] else []))
             i += 1
             v = lines[i].strip().split(":")[1].split(",")
-            assignments_k3_mac = list(map(int, v if v != [''] else []))
+            assignments_k3_mac = list(map(int, v if v != [""] else []))
             i += 1
             v = lines[i].strip().split(":")[1].split(",")
-            assignments_k4_fc = list(map(int, v if v != [''] else []))
+            assignments_k4_fc = list(map(int, v if v != [""] else []))
             i += 1
             v = lines[i].strip().split(":")[1].split(",")
-            assignments_k4_mac = list(map(int, v if v != [''] else []))
+            assignments_k4_mac = list(map(int, v if v != [""] else []))
 
         if points:
             if len(assignments_k3_fc) != 0:
