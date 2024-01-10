@@ -91,7 +91,7 @@ def plot_grid(points, lines, filename, colors = None):
     plt.close()
 
 for file in os.listdir("output"):
-    if file.endswith(".png"):
+    if file.startswith("map") and file.endswith(".png"):
         os.remove("output/" + file)
 
 with open("output/maps.txt", "r") as maps_file:

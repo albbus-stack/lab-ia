@@ -21,17 +21,16 @@ const mapsData = fs.createWriteStream("output/maps.txt", {
 
 for (let n of DIMENSIONS) {
   // Generate random instances of map-coloring problems as follows: scatter n points on the unit square; select a point X at random, connect X by a straight line to the nearest point Y such that X is not already connected to Y and the line crosses no other line; repeat the previous step until no more connections are possible. The points represent regions on the map and the lines connect neighbors.
-
   const exampleMapColoring = new MapColoringGraph(n);
-
-  // Now try to find k-colorings of each map, for both k3 and k4, using backtracking with forward checking
 
   console.log("----------- N = " + n + " ------------");
 
   // Write an example map to the maps file
   mapsData.write(exampleMapColoring.toString());
 
+  // Now try to find k-colorings of each map, for both k3 and k4
   for (let k of [3, 4]) {
+    // Using backtracking with forward checking
     const backtrackingWithForwardChecking = new ForwardChecking(
       exampleMapColoring,
       k,
@@ -56,7 +55,6 @@ for (let n of DIMENSIONS) {
     );
 
     // And backtracking with MAC.
-
     const backtrackingWithArcConsistency = new ArcConsistency(
       exampleMapColoring,
       k,
@@ -81,6 +79,5 @@ for (let n of DIMENSIONS) {
 }
 
 // Construct a table of average run times for each algorithm for values of n up to the largest you can manage.
-
 resultsCsv.end();
 mapsData.end();
