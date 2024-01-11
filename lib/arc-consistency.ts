@@ -196,7 +196,7 @@ export default class ArcConsistency {
         );
         for (const neighbour of fromNeighbours) {
           if (neighbour !== to) {
-            queue.push([neighbour, from]);
+            queue.push([from, neighbour]);
           }
         }
       }
@@ -209,7 +209,7 @@ export default class ArcConsistency {
     let revised = false;
 
     for (const value of domains[from]) {
-      if (!this.isAssignmentValid(assignments, from, value)) {
+      if (!this.hasSupport(assignments, domains, from)) {
         // Remove the value from the domain of the 'from' point
         domains[from] = domains[from].filter(
           (domainValue) => domainValue !== value
@@ -219,6 +219,16 @@ export default class ArcConsistency {
     }
 
     return revised;
+  }
+
+  private hasSupport(assignments: number[], domains: number[][], to: number) {
+    for (const neighbourValue of domains[to]) {
+      if (this.isAssignmentValid(assignments, to, neighbourValue)) {
+        return true;
+      }
+    }
+
+    return false;
   }
 
   toString() {
