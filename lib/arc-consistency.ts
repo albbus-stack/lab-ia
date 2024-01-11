@@ -141,24 +141,21 @@ export default class ArcConsistency {
     const unassigned = this.getUnassigned(assignments, domains);
 
     for (const value of domains[unassigned]) {
-      if (this.isAssignmentValid(assignments, unassigned, value)) {
-        const tempDomains = [...domains.map((domain) => [...domain])];
-        assignments[unassigned] = value;
+      const tempDomains = [...domains.map((domain) => [...domain])];
+      assignments[unassigned] = value;
+      domains[unassigned] = [value];
 
-        // Apply arc consistency to reduce the domains of neighboring unassigned points
-        if (this.applyArcConsistency(assignments, domains, unassigned)) {
-          // Recursively call the method with updated assignments and domains
-          if (
-            this.backtrackWithMaintainingArcConsistency(assignments, domains)
-          ) {
-            return true;
-          }
+      // Apply arc consistency to reduce the domains of neighboring unassigned points
+      if (this.applyArcConsistency(assignments, domains, unassigned)) {
+        // Recursively call the method with updated assignments and domains
+        if (this.backtrackWithMaintainingArcConsistency(assignments, domains)) {
+          return true;
         }
-
-        // Reset the assignment of the current unassigned point and restore the previous domains
-        assignments[unassigned] = -1;
-        domains = tempDomains;
       }
+
+      // Reset the assignment of the current unassigned point and restore the previous domains
+      assignments[unassigned] = -1;
+      domains = tempDomains;
     }
 
     // No valid coloring found, backtrack
@@ -170,6 +167,10 @@ export default class ArcConsistency {
     domains: number[][],
     unassigned: number
   ) {
+    if (domains.every((domain) => domain.length === 1)) {
+      return true;
+    }
+
     const queue: [number, number][] = [];
 
     // Add all arcs between the current unassigned point and its neighbors to the queue
@@ -182,7 +183,6 @@ export default class ArcConsistency {
 
     while (queue.length > 0) {
       const [from, to] = queue.shift()!;
-      // console.log(queue);
 
       if (this.revise(assignments, domains, from)) {
         // If the domain of the 'from' point becomes empty, inconsistency is detected
@@ -196,7 +196,7 @@ export default class ArcConsistency {
         );
         for (const neighbour of fromNeighbours) {
           if (neighbour !== to) {
-            queue.push([from, neighbour]);
+            queue.push([neighbour, from]);
           }
         }
       }
@@ -209,7 +209,7 @@ export default class ArcConsistency {
     let revised = false;
 
     for (const value of domains[from]) {
-      if (!this.hasSupport(assignments, domains, from)) {
+      if (!this.isAssignmentValid(assignments, from, value)) {
         // Remove the value from the domain of the 'from' point
         domains[from] = domains[from].filter(
           (domainValue) => domainValue !== value
@@ -219,16 +219,6 @@ export default class ArcConsistency {
     }
 
     return revised;
-  }
-
-  private hasSupport(assignments: number[], domains: number[][], to: number) {
-    for (const neighbourValue of domains[to]) {
-      if (this.isAssignmentValid(assignments, to, neighbourValue)) {
-        return true;
-      }
-    }
-
-    return false;
   }
 
   toString() {
