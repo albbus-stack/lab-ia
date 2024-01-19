@@ -10,7 +10,7 @@
 
 - Node.js
 - npm
-- Python 3 (only if you want to plot the data)
+- Python 3 (only if you want to plot the example data)
 
 ###### Steps
 
@@ -18,7 +18,7 @@
 1. Install `typescript` and `tsx` (a typescript runner) with `npm install`.
 1. Run `npm run start` to execute the program.
 1. Install `matplotlib` (used to display the map graphs) with `python3 -m pip install -r requirements.txt`.
-1. Run `npm run plot` to plot the data computed by Node.js using Python.
+1. Run `npm run plot` to plot the example data computed by Node.js using Python.
 
 ### Python version
 

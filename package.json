@@ -3,7 +3,8 @@
   "version": "1.0.0",
   "scripts": {
     "start": "npx tsx main.ts",
-    "plot": "python3 plot.py"
+    "plot": "python3 plot.py",
+    "plot-times": "python3 plot-times.py"
   },
   "author": "Alberto Del Buono Paolini",
   "license": "MIT",
