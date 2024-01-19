@@ -196,7 +196,7 @@ export default class ArcConsistency {
         );
         for (const neighbour of fromNeighbours) {
           if (neighbour !== to) {
-            queue.push([from, neighbour]);
+            queue.push([neighbour, from]);
           }
         }
       }
