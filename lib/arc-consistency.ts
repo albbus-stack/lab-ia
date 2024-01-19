@@ -1,6 +1,13 @@
 import MapColoringGraph from "./map-coloring-graph";
 import Point from "./point";
-import { average, median, standardDeviation } from "./utils";
+import {
+  average,
+  getNeighbours,
+  getUnassigned,
+  isAssignmentValid,
+  median,
+  standardDeviation,
+} from "./utils";
 
 export default class ArcConsistency {
   mapColoringGraph: MapColoringGraph;
@@ -70,64 +77,6 @@ export default class ArcConsistency {
     // }
   }
 
-  private getNeighbours(point: Point) {
-    // Filter the lines array to get the neighbors of a given point
-    return this.mapColoringGraph.lines
-      .filter((line) => line.pointA === point || line.pointB === point)
-      .map((line) => (line.pointA === point ? line.pointB : line.pointA))
-      .map((point) => this.mapColoringGraph.points.indexOf(point));
-  }
-
-  private isAssignmentValid(
-    assignments: number[],
-    unassigned: number,
-    value: number
-  ) {
-    for (let i = 0; i < assignments.length; i++) {
-      // Skip all the unassigned points
-      if (assignments[i] === -1) {
-        continue;
-      }
-
-      // Check if there is a line connecting the current neighbor and the unassigned point and if the neighbor has already been assigned the same color
-      if (
-        this.mapColoringGraph.lines.some((line) => {
-          const pointA = this.mapColoringGraph.points[i];
-          const pointB = this.mapColoringGraph.points[unassigned];
-
-          return (
-            (pointA === line.pointA && pointB === line.pointB) ||
-            (pointA === line.pointB && pointB === line.pointA)
-          );
-        }) &&
-        assignments[i] === value
-      ) {
-        return false;
-      }
-    }
-
-    return true;
-  }
-
-  private getUnassigned(assignments: number[], domains: number[][]) {
-    // Find the index of the unassigned point with the smallest domain (Minimum Remaining Values)
-    let min = Infinity;
-    let minIndex = -1;
-
-    for (let i = 0; i < assignments.length; i++) {
-      if (assignments[i] !== -1) {
-        continue;
-      }
-
-      if (domains[i].length < min) {
-        min = domains[i].length;
-        minIndex = i;
-      }
-    }
-
-    return minIndex;
-  }
-
   private backtrackWithMaintainingArcConsistency(
     assignments: number[],
     domains: number[][]
@@ -138,7 +87,7 @@ export default class ArcConsistency {
     }
 
     // Get the index of the unassigned map point with the smallest domain (Minimum Remaining Values)
-    const unassigned = this.getUnassigned(assignments, domains);
+    const unassigned = getUnassigned(assignments, domains);
 
     for (const value of domains[unassigned]) {
       const tempDomains = [...domains.map((domain) => [...domain])];
@@ -174,7 +123,9 @@ export default class ArcConsistency {
     const queue: [number, number][] = [];
 
     // Add all arcs between the current unassigned point and its neighbors to the queue
-    const neighbours = this.getNeighbours(
+    const neighbours = getNeighbours(
+      this.mapColoringGraph.points,
+      this.mapColoringGraph.lines,
       this.mapColoringGraph.points[unassigned]
     );
     for (const neighbour of neighbours) {
@@ -191,7 +142,9 @@ export default class ArcConsistency {
         }
 
         // Add all arcs between the 'from' point and its neighbors (excluding 'to') to the queue
-        const fromNeighbours = this.getNeighbours(
+        const fromNeighbours = getNeighbours(
+          this.mapColoringGraph.points,
+          this.mapColoringGraph.lines,
           this.mapColoringGraph.points[from]
         );
         for (const neighbour of fromNeighbours) {
@@ -223,7 +176,15 @@ export default class ArcConsistency {
 
   private hasSupport(assignments: number[], domains: number[][], to: number) {
     for (const neighbourValue of domains[to]) {
-      if (this.isAssignmentValid(assignments, to, neighbourValue)) {
+      if (
+        isAssignmentValid(
+          this.mapColoringGraph.points,
+          this.mapColoringGraph.lines,
+          assignments,
+          to,
+          neighbourValue
+        )
+      ) {
         return true;
       }
     }

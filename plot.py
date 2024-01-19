@@ -90,9 +90,11 @@ def plot_grid(points, lines, filename, colors = None):
     plt.savefig(filename, bbox_inches="tight")
     plt.close()
 
-for file in os.listdir("output"):
-    if file.startswith("map") and file.endswith(".png"):
-        os.remove("output/" + file)
+if not os.path.exists("output/graphs"):
+    os.makedirs("output/graphs")
+
+for file in os.listdir("output/graphs"):
+    os.remove("output/graphs/" + file)
 
 with open("output/maps.txt", "r") as maps_file:
     colors = ["red", "blue", "green", "yellow"]
@@ -135,15 +137,15 @@ with open("output/maps.txt", "r") as maps_file:
 
         if points:
             if len(assignments_k3_fc) != 0:
-                plot_grid(points, lines_list, "output/map_coloring_" + str(len(points)) + "_3" + "_forward_checking.png", [colors[assignment] for assignment in assignments_k3_fc])
+                plot_grid(points, lines_list, "output/graphs/map_coloring_" + str(len(points)) + "_3" + "_forward_checking.png", [colors[assignment] for assignment in assignments_k3_fc])
 
             if len(assignments_k4_fc) != 0:
-                plot_grid(points, lines_list, "output/map_coloring_" + str(len(points)) + "_4" + "_forward_checking.png", [colors[assignment] for assignment in assignments_k4_fc])
+                plot_grid(points, lines_list, "output/graphs/map_coloring_" + str(len(points)) + "_4" + "_forward_checking.png", [colors[assignment] for assignment in assignments_k4_fc])
 
             if len(assignments_k3_mac) != 0:
-                plot_grid(points, lines_list, "output/map_coloring_" + str(len(points)) + "_3" + "_arc_consistency.png", [colors[assignment] for assignment in assignments_k3_mac])
+                plot_grid(points, lines_list, "output/graphs/map_coloring_" + str(len(points)) + "_3" + "_arc_consistency.png", [colors[assignment] for assignment in assignments_k3_mac])
 
             if len(assignments_k4_mac) != 0:
-                plot_grid(points, lines_list, "output/map_coloring_" + str(len(points)) + "_4" + "_arc_consistency.png", [colors[assignment] for assignment in assignments_k4_mac])
+                plot_grid(points, lines_list, "output/graphs/map_coloring_" + str(len(points)) + "_4" + "_arc_consistency.png", [colors[assignment] for assignment in assignments_k4_mac])
 
         i += 1

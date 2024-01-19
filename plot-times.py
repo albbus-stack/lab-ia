@@ -2,9 +2,11 @@ import matplotlib.pyplot as plt
 import csv
 import os
 
-for file in os.listdir("output"):
-    if file.endswith("results.png"):
-        os.remove("output/" + file)
+if not os.path.exists("output/times"):
+    os.makedirs("output/times")
+
+for file in os.listdir("output/times"):
+        os.remove("output/times/" + file)
 
 def plot_results(results, title, filename):
     plt.title(title)
@@ -24,7 +26,7 @@ def plot_results(results, title, filename):
     plt.savefig(filename.replace("results.png", "med_results.png"), bbox_inches="tight")
     plt.close()
 
-with open("output/results.csv", "r") as results_file:
+with open("output/times.csv", "r") as results_file:
     results = csv.reader(results_file, delimiter=",")
     next(results, None)
 
@@ -43,7 +45,7 @@ with open("output/results.csv", "r") as results_file:
         elif result[0] == "mac" and result[2] == "4":
             mac_4_results.append((int(result[1]),float(result[3]),float(result[4])))
 
-    plot_results(fc_3_results, "FC k=3", "output/fc_3_results.png")
-    plot_results(mac_3_results, "MAC k=3", "output/mac_3_results.png")
-    plot_results(fc_4_results, "FC k=4", "output/fc_4_results.png")
-    plot_results(mac_4_results, "MAC k=4", "output/mac_4_results.png")
+    plot_results(fc_3_results, "FC k=3", "output/times/fc_3_results.png")
+    plot_results(mac_3_results, "MAC k=3", "output/times/mac_3_results.png")
+    plot_results(fc_4_results, "FC k=4", "output/times/fc_4_results.png")
+    plot_results(mac_4_results, "MAC k=4", "output/times/mac_4_results.png")

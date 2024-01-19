@@ -12,10 +12,10 @@ if (!fs.existsSync("output")) {
   fs.mkdirSync("output");
 }
 
-const resultsCsv = fs.createWriteStream("output/results.csv", {
+const timesCsv = fs.createWriteStream("output/times.csv", {
   flags: "w",
 });
-resultsCsv.write("algorithm,n,k,average,median,standard deviation\n");
+timesCsv.write("algorithm,n,k,average,median,standard deviation\n");
 
 const mapsData = fs.createWriteStream("output/maps.txt", {
   flags: "w",
@@ -52,7 +52,7 @@ for (let n of DIMENSIONS) {
         "\n"
     );
 
-    resultsCsv.write(
+    timesCsv.write(
       `fc,${n},${k},${backtrackingWithForwardChecking.averageRunTime},${backtrackingWithForwardChecking.medianRunTime},${backtrackingWithForwardChecking.standardDeviation}\n`
     );
 
@@ -74,12 +74,12 @@ for (let n of DIMENSIONS) {
         "\n"
     );
 
-    resultsCsv.write(
+    timesCsv.write(
       `mac,${n},${k},${backtrackingWithArcConsistency.averageRunTime},${backtrackingWithArcConsistency.medianRunTime},${backtrackingWithArcConsistency.standardDeviation}\n`
     );
   }
 }
 
 // Construct a table of average run times for each algorithm for values of n up to the largest you can manage.
-resultsCsv.end();
+timesCsv.end();
 mapsData.end();
