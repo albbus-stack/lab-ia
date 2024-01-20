@@ -1,5 +1,4 @@
 import MapColoringGraph from "./map-coloring-graph";
-import Point from "./point";
 import {
   average,
   getNeighbours,
@@ -65,13 +64,9 @@ export default class ForwardChecking {
 
     const res = this.backtrackWithForwardChecking(assignments, domains);
     if (res) {
+      // Backtracking with Forward Checking has found a valid coloring
       this.assignments = assignments;
     }
-    //   console.log(assignments);
-    //   console.log("Solution found");
-    // } else {
-    //   console.log("No solution found");
-    // }
   }
 
   private backtrackWithForwardChecking(
