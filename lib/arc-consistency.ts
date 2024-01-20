@@ -81,6 +81,13 @@ export default class ArcConsistency {
     assignments: number[],
     domains: number[][]
   ) {
+    // Check if any map points have an unitary domain, if so assign the only possible color to them
+    domains.forEach((domain, index) => {
+      if (domain.length === 1) {
+        assignments[index] = domain[0];
+      }
+    });
+
     // Check if all map points have been assigned a color, if so a valid coloring has been found
     if (assignments.every((assignment) => assignment !== -1)) {
       return true;
@@ -116,10 +123,6 @@ export default class ArcConsistency {
     domains: number[][],
     unassigned: number
   ) {
-    if (domains.every((domain) => domain.length === 1)) {
-      return true;
-    }
-
     const queue: [number, number][] = [];
 
     // Add all arcs between the current unassigned point and its neighbors to the queue
@@ -135,7 +138,7 @@ export default class ArcConsistency {
     while (queue.length > 0) {
       const [from, to] = queue.shift()!;
 
-      if (this.revise(assignments, domains, from)) {
+      if (this.revise(assignments, domains, from, to)) {
         // If the domain of the 'from' point becomes empty, inconsistency is detected
         if (domains[from].length === 0) {
           return false;
@@ -158,11 +161,17 @@ export default class ArcConsistency {
     return true;
   }
 
-  private revise(assignments: number[], domains: number[][], from: number) {
+  private revise(
+    assignments: number[],
+    domains: number[][],
+    from: number,
+    to: number
+  ) {
     let revised = false;
 
     for (const value of domains[from]) {
-      if (!this.hasSupport(assignments, domains, from)) {
+      assignments[from] = value;
+      if (!this.hasSupport(assignments, domains, to)) {
         // Remove the value from the domain of the 'from' point
         domains[from] = domains[from].filter(
           (domainValue) => domainValue !== value
@@ -170,19 +179,20 @@ export default class ArcConsistency {
         revised = true;
       }
     }
+    assignments[from] = -1;
 
     return revised;
   }
 
   private hasSupport(assignments: number[], domains: number[][], to: number) {
-    for (const neighbourValue of domains[to]) {
+    for (const value of domains[to]) {
       if (
         isAssignmentValid(
           this.mapColoringGraph.points,
           this.mapColoringGraph.lines,
           assignments,
           to,
-          neighbourValue
+          value
         )
       ) {
         return true;
