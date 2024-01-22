@@ -3,7 +3,7 @@ import ForwardChecking from "./lib/forward-checking";
 import MapColoringGraph from "./lib/map-coloring-graph";
 import ArcConsistency from "./lib/arc-consistency";
 
-const N_INSTANCES = 10;
+const N_INSTANCES = 20;
 const DIMENSIONS = [
   2, 3, 4, 5, 6, 7, 8, 9, 10, 15, 20, 25, 30 /*, 35, 40, 45, 50*/,
 ];
@@ -15,7 +15,9 @@ if (!fs.existsSync("output")) {
 const timesCsv = fs.createWriteStream("output/times.csv", {
   flags: "w",
 });
-timesCsv.write("algorithm,n,k,average,median,standard deviation\n");
+timesCsv.write(
+  "algorithm,n,k,average,median,standard deviation,average backtracks\n"
+);
 
 const mapsData = fs.createWriteStream("output/maps.txt", {
   flags: "w",
@@ -53,7 +55,7 @@ for (let n of DIMENSIONS) {
     );
 
     timesCsv.write(
-      `fc,${n},${k},${backtrackingWithForwardChecking.averageRunTime},${backtrackingWithForwardChecking.medianRunTime},${backtrackingWithForwardChecking.standardDeviation}\n`
+      `fc,${n},${k},${backtrackingWithForwardChecking.averageRunTime},${backtrackingWithForwardChecking.medianRunTime},${backtrackingWithForwardChecking.standardDeviation},${backtrackingWithForwardChecking.backtracks}\n`
     );
 
     // And backtracking with MAC.
@@ -75,7 +77,7 @@ for (let n of DIMENSIONS) {
     );
 
     timesCsv.write(
-      `mac,${n},${k},${backtrackingWithArcConsistency.averageRunTime},${backtrackingWithArcConsistency.medianRunTime},${backtrackingWithArcConsistency.standardDeviation}\n`
+      `mac,${n},${k},${backtrackingWithArcConsistency.averageRunTime},${backtrackingWithArcConsistency.medianRunTime},${backtrackingWithArcConsistency.standardDeviation},${backtrackingWithArcConsistency.backtracks}\n`
     );
   }
 }

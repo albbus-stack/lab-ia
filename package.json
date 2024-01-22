@@ -2,9 +2,10 @@
   "name": "lab-ia",
   "version": "1.0.0",
   "scripts": {
-    "start": "npx tsx main.ts",
-    "plot": "python3 plot.py",
-    "plot-times": "python3 plot-times.py"
+    "test": "npx tsx main.ts",
+    "plot-examples": "python3 plot-examples.py",
+    "plot-times": "python3 plot-times.py",
+    "plot": "npm run plot-examples && npm run plot-times"
   },
   "author": "Alberto Del Buono Paolini",
   "license": "MIT",

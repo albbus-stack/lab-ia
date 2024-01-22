@@ -17,6 +17,7 @@ export default class ArcConsistency {
   medianRunTime: number;
   iterations: number;
   k: number;
+  backtracks: number;
 
   constructor(mcg: MapColoringGraph, k: number, iterations: number) {
     this.mapColoringGraph = mcg;
@@ -27,21 +28,26 @@ export default class ArcConsistency {
     this.iterations = iterations;
     this.assignments = [];
     this.exampleAssignments = [];
+    this.backtracks = 0;
   }
 
   run() {
     const times: number[] = [];
+    const backtracksList: number[] = [];
 
     for (let i = 0; i < this.iterations; i++) {
       if (i !== 0)
         this.mapColoringGraph = new MapColoringGraph(this.mapColoringGraph.n);
 
       this.assignments = [];
+      this.backtracks = 0;
 
       const start = performance.now();
       this.backtrack();
       const end = performance.now();
+
       times.push(end - start);
+      backtracksList.push(this.backtracks);
 
       if (i === 0) {
         this.exampleAssignments = this.assignments;
@@ -51,6 +57,7 @@ export default class ArcConsistency {
     this.averageRunTime = average(times);
     this.standardDeviation = standardDeviation(times);
     this.medianRunTime = median(times);
+    this.backtracks = average(backtracksList);
   }
 
   private backtrack() {
@@ -110,6 +117,7 @@ export default class ArcConsistency {
     }
 
     // No valid coloring found, backtrack
+    this.backtracks++;
     return false;
   }
 
