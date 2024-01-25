@@ -59,7 +59,7 @@ export function isAssignmentValid(
 }
 
 export function getUnassigned(assignments: number[], domains: number[][]) {
-  // Find the index of the unassigned point with the smallest domain (Minimum Remaining Values)
+  // Find the index of the unassigned point with the smallest domain (Minimum Remaining Values), breaking ties randomly
   let min = Infinity;
   let minIndex = -1;
 
@@ -69,6 +69,11 @@ export function getUnassigned(assignments: number[], domains: number[][]) {
     }
 
     if (domains[i].length < min) {
+      min = domains[i].length;
+      minIndex = i;
+    }
+
+    if (domains[i].length === min && Math.random() < 0.5) {
       min = domains[i].length;
       minIndex = i;
     }

@@ -5,7 +5,7 @@ import ArcConsistency from "./lib/arc-consistency";
 
 const N_INSTANCES = 20;
 const DIMENSIONS = [
-  2, 3, 4, 5, 6, 7, 8, 9, 10, 15, 20, 25, 30 /*, 35, 40, 45, 50*/,
+  2, 3, 4, 5, 6, 7, 8, 9, 10, 15, 20, 25, 30, 40 /*50, 60, 80, 100,*/,
 ];
 
 if (!fs.existsSync("output")) {
@@ -25,7 +25,10 @@ const mapsData = fs.createWriteStream("output/maps.txt", {
 
 for (let n of DIMENSIONS) {
   // Generate random instances of map-coloring problems as follows: scatter n points on the unit square; select a point X at random, connect X by a straight line to the nearest point Y such that X is not already connected to Y and the line crosses no other line; repeat the previous step until no more connections are possible. The points represent regions on the map and the lines connect neighbors.
-  const exampleMapColoring = new MapColoringGraph(n);
+  const mapColoringGraphs = Array.from(Array(N_INSTANCES).keys()).map(
+    (_) => new MapColoringGraph(n)
+  );
+  const exampleMapColoring = mapColoringGraphs[0];
 
   console.log("----------- N = " + n + " ------------");
 
@@ -36,9 +39,8 @@ for (let n of DIMENSIONS) {
   for (let k of [3, 4]) {
     // Using backtracking with forward checking
     const backtrackingWithForwardChecking = new ForwardChecking(
-      exampleMapColoring,
-      k,
-      N_INSTANCES
+      mapColoringGraphs,
+      k
     );
     backtrackingWithForwardChecking.run();
 
@@ -60,9 +62,8 @@ for (let n of DIMENSIONS) {
 
     // And backtracking with MAC.
     const backtrackingWithArcConsistency = new ArcConsistency(
-      exampleMapColoring,
-      k,
-      N_INSTANCES
+      mapColoringGraphs,
+      k
     );
     backtrackingWithArcConsistency.run();
 

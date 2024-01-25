@@ -10,22 +10,22 @@ import {
 
 export default class ForwardChecking {
   mapColoringGraph: MapColoringGraph;
+  mapColoringGraphs: MapColoringGraph[];
   assignments: number[];
   exampleAssignments: number[];
   averageRunTime: number;
   standardDeviation: number;
   medianRunTime: number;
-  iterations: number;
   k: number;
   backtracks: number;
 
-  constructor(mcg: MapColoringGraph, k: number, iterations: number) {
-    this.mapColoringGraph = mcg;
+  constructor(mcgs: MapColoringGraph[], k: number) {
+    this.mapColoringGraphs = mcgs;
+    this.mapColoringGraph = mcgs[0];
     this.k = k;
     this.averageRunTime = 0;
     this.standardDeviation = 0;
     this.medianRunTime = 0;
-    this.iterations = iterations;
     this.assignments = [];
     this.exampleAssignments = [];
     this.backtracks = 0;
@@ -35,9 +35,8 @@ export default class ForwardChecking {
     const times: number[] = [];
     const backtracksList: number[] = [];
 
-    for (let i = 0; i < this.iterations; i++) {
-      if (i !== 0)
-        this.mapColoringGraph = new MapColoringGraph(this.mapColoringGraph.n);
+    for (let i = 0; i < this.mapColoringGraphs.length; i++) {
+      this.mapColoringGraph = this.mapColoringGraphs[i];
 
       this.assignments = [];
       this.backtracks = 0;

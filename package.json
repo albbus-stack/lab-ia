@@ -5,7 +5,7 @@
     "test": "npx tsx main.ts",
     "plot-examples": "python3 plot-examples.py",
     "plot-times": "python3 plot-times.py",
-    "plot": "npm run plot-examples && npm run plot-times"
+    "plot": "npm run plot-times && npm run plot-examples"
   },
   "author": "Alberto Del Buono Paolini",
   "license": "MIT",
